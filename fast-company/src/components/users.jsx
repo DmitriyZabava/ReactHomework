@@ -28,7 +28,7 @@ const Users = () => {
       <h2>{renderPhrase(users.length)}</h2>
       <table className="table">
         <thead>
-          <tr>
+          <tr className="table-secondary">
             <th scope="col">Имя</th>
             <th scope="col">Качества</th>
             <th scope="col">Профессия</th>
@@ -38,16 +38,19 @@ const Users = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((person) => {
+          {users.map((person, indx) => {
             return (
-              <tr key={person._id}>
+              <tr
+                key={person._id}
+                className={indx % 2 === 0 ? "table-info" : "table-primary"}
+              >
                 <th>{person.name}</th>
                 <td>
                   {person.qualities.map((qualiti) => {
                     return (
                       <span
                         key={qualiti._id}
-                        className={"badge bg-" + qualiti.color + " m-2"}
+                        className={"badge bg-" + qualiti.color + " m-1"}
                       >
                         {qualiti.name}
                       </span>
