@@ -7,32 +7,25 @@ const Users = () => {
   const handleDelete = (userId) => {
     setUsers((prevState) => prevState.filter((user) => user._id !== userId));
   };
-
-  const renderParse = (number) => {
-    let message = "";
-    if (number > 4 || number === 1) {
-      message = (
+  const renderPhrase = (number) => {
+    let headings =
+      number === 1 || number > 4 ? (
         <span className="badge bg-primary m-2">
           {number + " человек тусанёт с тобой сегодня"}
         </span>
-      );
-    } else if (number > 1 && number <= 4) {
-      message = (
+      ) : number > 1 && number <= 4 ? (
         <span className="badge bg-primary m-2">
           {number + " человека тусанут с тобой сегодня"}
         </span>
-      );
-    } else if (number === 0) {
-      message = (
+      ) : (
         <span className="badge bg-danger m-2">Никто с тобой не тусанёт !</span>
       );
-    }
-    return message;
+    return headings;
   };
 
   return (
     <>
-      <h2>{renderParse(users.length)}</h2>
+      <h2>{renderPhrase(users.length)}</h2>
       <table className="table">
         <thead>
           <tr>
