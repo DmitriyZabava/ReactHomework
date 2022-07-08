@@ -6,7 +6,6 @@ const Users = () => {
 
   const handleDelete = (userId) => {
     setUsers((prevState) => prevState.filter((user) => user._id !== userId));
-    console.log(userId);
   };
 
   const renderParse = (number) => {
@@ -48,7 +47,7 @@ const Users = () => {
         <tbody>
           {users.map((person) => {
             return (
-              <tr key={person._id} className="m-2">
+              <tr key={person._id}>
                 <th>{person.name}</th>
                 <td>
                   {person.qualities.map((qualiti) => {
