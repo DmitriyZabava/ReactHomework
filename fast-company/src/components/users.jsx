@@ -3,40 +3,37 @@ import api from "../api";
 
 const Users = () => {
   const [users, setUsers] = useState(api.users.fetchAll());
-  const handleDelete = (userId) => {};
-  const renderParse = (number) => {};
-  console.log(users);
-  const bageClases = "badge m-2 bg-";
 
-  let usersTable = users.map((user) => {
-    return (
-      <tr key={user._id} className="m-2">
-        <th>{user.name}</th>
-        <td>
-          {user.qualities.map((qualiti) => {
-            return (
-              <span key={qualiti._id} className={bageClases + qualiti.color}>
-                {qualiti.name}
-              </span>
-            );
-          })}
-        </td>
-        <td>{user.profession.name}</td>
-        <td>{user.completedMeetings}</td>
-        <td>{user.rate}/5</td>
-        <button className="btn bg-danger m-1"> delete </button>
-        {/* <td className="badge bg-danger m-2"> delete </td> */}
-      </tr>
-    );
-  });
+  const handleDelete = (userId) => {
+    setUsers((prevState) => prevState.filter((user) => user._id !== userId));
+    console.log(userId);
+  };
+
+  const renderParse = (number) => {
+    let message = "";
+    if (number > 4 || number === 1) {
+      message = (
+        <span className="badge bg-primary m-2">
+          {number + " человек тусанёт с тобой сегодня"}
+        </span>
+      );
+    } else if (number > 1 && number <= 4) {
+      message = (
+        <span className="badge bg-primary m-2">
+          {number + " человека тусанут с тобой сегодня"}
+        </span>
+      );
+    } else if (number === 0) {
+      message = (
+        <span className="badge bg-danger m-2">Никто с тобой не тусанёт !</span>
+      );
+    }
+    return message;
+  };
 
   return (
     <>
-      <h2>
-        <span className="badge bg-primary">
-          человек тусанёт с тобой сегодня
-        </span>
-      </h2>
+      <h2>{renderParse(users.length)}</h2>
       <table className="table">
         <thead>
           <tr>
@@ -48,7 +45,37 @@ const Users = () => {
             <th></th>
           </tr>
         </thead>
-        <tbody>{usersTable}</tbody>
+        <tbody>
+          {users.map((person) => {
+            return (
+              <tr key={person._id} className="m-2">
+                <th>{person.name}</th>
+                <td>
+                  {person.qualities.map((qualiti) => {
+                    return (
+                      <span
+                        key={qualiti._id}
+                        className={"badge bg-" + qualiti.color + " m-2"}
+                      >
+                        {qualiti.name}
+                      </span>
+                    );
+                  })}
+                </td>
+                <td>{person.profession.name}</td>
+                <td>{person.completedMeetings}</td>
+                <td>{person.rate}/5</td>
+                <td
+                  className="btn bg-danger m-2"
+                  onClick={() => handleDelete(person._id)}
+                >
+                  {" "}
+                  delete{" "}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
       </table>
     </>
   );
