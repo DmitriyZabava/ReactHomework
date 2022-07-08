@@ -64,12 +64,17 @@ const Users = () => {
                 <td>{person.profession.name}</td>
                 <td>{person.completedMeetings}</td>
                 <td>{person.rate}/5</td>
-                <td
-                  className="btn bg-danger m-2"
-                  onClick={() => handleDelete(person._id)}
-                >
-                  {" "}
-                  delete{" "}
+                <td>
+                  <h3>
+                    <button
+                      typeof="button"
+                      className="btn btn-danger"
+                      onClick={() => handleDelete(person._id)}
+                    >
+                      {" "}
+                      delete{" "}
+                    </button>
+                  </h3>
                 </td>
               </tr>
             );
