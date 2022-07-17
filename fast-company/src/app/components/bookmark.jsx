@@ -4,8 +4,8 @@ const Bookmark = ({ bookmark, _id, onSelect }) => {
   const icon = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="26"
-      height="26"
+      width="30"
+      height="30"
       fill="currentColor"
       className="bi bi-star"
       viewBox="0 0 16 16"
@@ -16,9 +16,9 @@ const Bookmark = ({ bookmark, _id, onSelect }) => {
   const iconSelect = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      fill="orange"
+      width="27"
+      height="27"
+      fill="gold"
       className="bi bi-star-fill"
       viewBox="0 0 16 16"
     >
@@ -26,7 +26,7 @@ const Bookmark = ({ bookmark, _id, onSelect }) => {
     </svg>
   );
   return (
-    <button className="btn" onClick={onSelect.bind(null, _id)}>
+    <button className="btn btn-primary" onClick={onSelect.bind(null, _id)}>
       {bookmark ? iconSelect : icon}
     </button>
   );
