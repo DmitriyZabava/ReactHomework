@@ -1,7 +1,7 @@
 import React from "react";
 import User from "./user";
 
-const Users = ({ users, onDelete, onSelect }) => {
+const Users = ({ users, ...rest }) => {
   return (
     <>
       <table className="table">
@@ -17,7 +17,9 @@ const Users = ({ users, onDelete, onSelect }) => {
           </tr>
         </thead>
         <tbody>
-          <User users={users} onDelete={onDelete} onSelect={onSelect} />
+          {users.map((user, indx) => (
+            <User key={user._id} {...rest} {...user} indx={indx} />
+          ))}
         </tbody>
       </table>
     </>
