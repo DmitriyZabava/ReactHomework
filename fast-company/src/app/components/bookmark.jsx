@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const Bookmark = ({ bookmark, _id, onSelect }) => {
+const BookMark = ({ status, ...rest }) => {
     const icon = (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -27,16 +27,13 @@ const Bookmark = ({ bookmark, _id, onSelect }) => {
         </svg>
     );
     return (
-        <button className="btn btn-primary" onClick={onSelect.bind(null, _id)}>
-            {bookmark ? iconSelect : icon}
+        <button className="btn btn-primary" {...rest}>
+            {status ? iconSelect : icon}
         </button>
     );
 };
-
-Bookmark.propTypes = {
-    bookmark: PropTypes.bool.isRequired,
-    _id: PropTypes.string.isRequired,
-    onSelect: PropTypes.func.isRequired
+BookMark.propTypes = {
+    status: PropTypes.bool
 };
 
-export default Bookmark;
+export default BookMark;

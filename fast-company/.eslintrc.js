@@ -8,12 +8,13 @@ module.exports = {
         ecmaFeatures: {
             jsx: true
         },
-        ecmaVersion: "latest",
+        ecmaVersion: 12,
         sourceType: "module"
     },
     plugins: ["react"],
     rules: {
-        indent: ["error", 4],
+        "no-mixed-spaces-and-tabs": ["error", "smart - tabs"],
+        indent: [0, 4],
         semi: [2, "always"],
         "space-before-function-paren": [
             "error",

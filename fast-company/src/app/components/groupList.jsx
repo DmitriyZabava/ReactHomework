@@ -1,29 +1,27 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { isArray } from "lodash";
+
 const GroupList = ({
     items,
     valueProperty,
     contentProperty,
     onItemSelect,
-    selectetItem
+    selectedItem
 }) => {
-    if (isArray(items)) {
+    if (!Array.isArray(items)) {
         return (
             <ul className="list-group">
-                {items.map((item) => (
+                {Object.keys(items).map((item) => (
                     <li
-                        key={item[valueProperty]}
+                        key={items[item][valueProperty]}
                         className={
                             "list-group-item" +
-                            (item[valueProperty] === selectetItem
-                                ? " active"
-                                : "")
+                            (items[item] === selectedItem ? " active" : "")
                         }
-                        onClick={() => onItemSelect(item[valueProperty])}
+                        onClick={() => onItemSelect(items[item])}
                         role="button"
                     >
-                        {item[contentProperty]}
+                        {items[item][contentProperty]}
                     </li>
                 ))}
             </ul>
@@ -31,19 +29,17 @@ const GroupList = ({
     }
     return (
         <ul className="list-group">
-            {Object.keys(items).map((item) => (
+            {items.map((item) => (
                 <li
-                    key={items[item][valueProperty]}
+                    key={item[valueProperty]}
                     className={
                         "list-group-item" +
-                        (items[item][valueProperty] === selectetItem
-                            ? " active"
-                            : "")
+                        (item === selectedItem ? " active" : "")
                     }
-                    onClick={() => onItemSelect(items[item][valueProperty])}
+                    onClick={() => onItemSelect(item)}
                     role="button"
                 >
-                    {items[item][contentProperty]}
+                    {item[contentProperty]}
                 </li>
             ))}
         </ul>
@@ -55,10 +51,10 @@ GroupList.defaultProps = {
 };
 GroupList.propTypes = {
     items: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-    onItemSelect: PropTypes.func,
     valueProperty: PropTypes.string.isRequired,
     contentProperty: PropTypes.string.isRequired,
-    selectetItem: PropTypes.string
+    onItemSelect: PropTypes.func,
+    selectedItem: PropTypes.object
 };
 
 export default GroupList;
