@@ -18,7 +18,7 @@ const TableBody = ({ data, columns }) => {
             {data.map((item, indx) => (
                 <tr
                     key={item._id}
-                    className={indx % 2 === 0 ? "table-primary" : "table-info"}
+                    className={indx % 2 === 0 ? "table-light" : "table-info"}
                 >
                     {Object.keys(columns).map((column) => (
                         <td key={column}>{renderContent(item, column)}</td>

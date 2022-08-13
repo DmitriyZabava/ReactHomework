@@ -3,8 +3,6 @@ import PropTypes from "prop-types";
 
 const TableHeader = ({ onSort, selectedSort, columns }) => {
     const handleSort = (item) => {
-        console.log("item", item);
-
         if (selectedSort.path === item) {
             onSort({
                 ...selectedSort,
@@ -14,16 +12,15 @@ const TableHeader = ({ onSort, selectedSort, columns }) => {
             onSort({ path: item, order: "asc" });
         }
     };
-    const renderIcon = (path) => {
-        if (selectedSort.path === path) {
-            return (
-                <i
-                    className={`bi bi-caret-${
-                        selectedSort.order === "asc" ? "up" : "down"
-                    }-fill`}
-                ></i>
-            );
+    const renderSortArrow = (selectedSort, currentPath) => {
+        if (selectedSort.path === currentPath) {
+            if (selectedSort.order === "asc") {
+                return <i className="bi bi-caret-down-fill"></i>;
+            } else {
+                return <i className="bi bi-caret-up-fill"></i>;
+            }
         }
+        return null;
     };
 
     return (
@@ -41,7 +38,7 @@ const TableHeader = ({ onSort, selectedSort, columns }) => {
                         scope="col"
                     >
                         {columns[column].name}
-                        {renderIcon(columns[column].path)}
+                        {renderSortArrow(selectedSort, columns[column].path)}
                     </th>
                 ))}
             </tr>
