@@ -7,26 +7,25 @@ import QualitiesList from "./qualitiesList";
 
 const UserPage = ({ userId }) => {
     const history = useHistory();
-    const [selectetUser, setSelectetUser] = useState();
+    const [user, setUser] = useState();
 
     useEffect(() => {
-        api.users.getById(userId).then((data) => setSelectetUser(data));
+        api.users.getById(userId).then((data) => setUser(data));
     }, []);
 
-    const handleSave = () => history.replace("/users");
+    const handleClick = () => history.push("/users");
 
-    if (selectetUser) {
+    if (user) {
         return (
             <>
-                <h1>{selectetUser.name}</h1>
-                <h3>Профессия : {selectetUser.profession.name}</h3>
-                <QualitiesList qualities={selectetUser.qualities} />
-                <h5>Встретился раз : {selectetUser.completedMeetings} </h5>
-                <h3>Оценка : {selectetUser.rate} </h3>
-                <button
-                    className="btn btn-warning"
-                    onClick={() => handleSave()}
-                >
+                <div className="m-1">
+                    <h1>{user.name}</h1>
+                    <h3>Профессия : {user.profession.name}</h3>
+                    <QualitiesList qualities={user.qualities} />
+                    <h5>Встретился раз : {user.completedMeetings} </h5>
+                    <h3>Оценка : {user.rate} </h3>
+                </div>{" "}
+                <button className="btn btn-warning" onClick={handleClick}>
                     Все Пользователи
                 </button>
             </>
