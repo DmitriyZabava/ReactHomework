@@ -18,7 +18,6 @@ const UsersList = () => {
     const pageSize = 4;
     const [users, setUsers] = useState();
     const [searchValue, setSearchValue] = useState("");
-    // const [serchedUsers, setSerchedUsers] = useState();
 
     useEffect(() => {
         api.users.fetchAll().then((data) => setUsers(data));
