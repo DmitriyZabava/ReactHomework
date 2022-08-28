@@ -8,6 +8,7 @@ import SearchStatus from "./searchStatus";
 import UsersTable from "./usersTable";
 import _ from "lodash";
 import Loader from "./loader";
+import TextField from "./textField";
 
 const UsersList = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -15,8 +16,10 @@ const UsersList = () => {
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
     const pageSize = 4;
-
     const [users, setUsers] = useState();
+    const [searchValue, setSearchValue] = useState("");
+    // const [serchedUsers, setSerchedUsers] = useState();
+
     useEffect(() => {
         api.users.fetchAll().then((data) => setUsers(data));
     }, []);
@@ -35,19 +38,38 @@ const UsersList = () => {
     useEffect(() => {
         api.professions.fetchAll().then((data) => setProfession(data));
     }, []);
+
     useEffect(() => {
         setCurrentPage(1);
     }, [selectedProf]);
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchValue]);
+
     const handleProfessionSelect = (item) => {
+        setSearchValue("");
         setSelectedProf(item);
     };
 
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex);
     };
+    const handelSearch = ({ target }) => {
+        setSelectedProf();
+        setSearchValue(target.value);
+    };
 
     if (users) {
+        const searchUsers =
+            searchValue &&
+            users.filter(
+                (user) =>
+                    user.name
+                        .toLowerCase()
+                        .indexOf(searchValue.toLowerCase()) !== -1
+            );
+
         const filteredUsers = selectedProf
             ? users.filter(
                   (user) =>
@@ -55,17 +77,21 @@ const UsersList = () => {
                       JSON.stringify(selectedProf)
               )
             : users;
+
         const handleSort = (item) => {
             setSortBy(item);
         };
 
-        const count = filteredUsers.length;
+        const count = searchValue ? searchUsers.length : filteredUsers.length;
+
         const sortetUsers = _.orderBy(
-            filteredUsers,
+            searchValue ? searchUsers : filteredUsers,
             [sortBy.path],
             [sortBy.order]
         );
+
         const usersCrop = paginate(sortetUsers, currentPage, pageSize);
+
         const clearFilter = () => {
             setSelectedProf();
         };
@@ -90,6 +116,13 @@ const UsersList = () => {
                 )}
                 <div className="d-flex flex-column">
                     <SearchStatus length={count} />
+                    <TextField
+                        id="search"
+                        name="search"
+                        value={searchValue}
+                        placeholder="Search..."
+                        onChange={handelSearch}
+                    />
                     {count > 0 && (
                         <UsersTable
                             users={usersCrop}
