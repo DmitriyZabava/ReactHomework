@@ -16,8 +16,9 @@ const UsersList = () => {
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
     const pageSize = 4;
+    const [searchQuery, setSearchQuery] = useState("");
+
     const [users, setUsers] = useState();
-    const [searchValue, setSearchValue] = useState("");
 
     useEffect(() => {
         api.users.fetchAll().then((data) => setUsers(data));
@@ -40,36 +41,30 @@ const UsersList = () => {
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [selectedProf]);
-
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [searchValue]);
+    }, [selectedProf, searchQuery]);
 
     const handleProfessionSelect = (item) => {
-        setSearchValue("");
+        if (searchQuery !== "") setSearchQuery("");
         setSelectedProf(item);
     };
 
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex);
     };
-    const handelSearch = ({ target }) => {
-        setSelectedProf();
-        setSearchValue(target.value);
+    const handelSearchQuery = ({ target }) => {
+        setSelectedProf(undefined);
+        setSearchQuery(target.value);
     };
 
     if (users) {
-        const searchUsers =
-            searchValue &&
-            users.filter(
-                (user) =>
-                    user.name
-                        .toLowerCase()
-                        .indexOf(searchValue.toLowerCase()) !== -1
-            );
-
-        const filteredUsers = selectedProf
+        const filteredUsers = searchQuery
+            ? users.filter(
+                  (user) =>
+                      user.name
+                          .toLowerCase()
+                          .indexOf(searchQuery.toLowerCase()) !== -1
+              )
+            : selectedProf
             ? users.filter(
                   (user) =>
                       JSON.stringify(user.profession) ===
@@ -81,10 +76,10 @@ const UsersList = () => {
             setSortBy(item);
         };
 
-        const count = searchValue ? searchUsers.length : filteredUsers.length;
+        const count = filteredUsers.length;
 
         const sortetUsers = _.orderBy(
-            searchValue ? searchUsers : filteredUsers,
+            filteredUsers,
             [sortBy.path],
             [sortBy.order]
         );
@@ -93,6 +88,7 @@ const UsersList = () => {
 
         const clearFilter = () => {
             setSelectedProf();
+            if (searchQuery !== "") setSearchQuery("");
         };
 
         return (
@@ -118,9 +114,9 @@ const UsersList = () => {
                     <TextField
                         id="search"
                         name="search"
-                        value={searchValue}
+                        value={searchQuery}
                         placeholder="Search..."
-                        onChange={handelSearch}
+                        onChange={handelSearchQuery}
                     />
                     {count > 0 && (
                         <UsersTable
