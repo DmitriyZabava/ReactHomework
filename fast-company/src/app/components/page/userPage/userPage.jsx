@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useHistory } from "react-router-dom";
-import api from "../api";
-import Loader from "./loader";
-import QualitiesList from "./qualitiesList";
+import api from "../../../api";
+import Loader from "../../common/loader";
+import Qualities from "../../ui/qualities";
 
 const UserPage = ({ userId }) => {
     const history = useHistory();
@@ -21,7 +21,7 @@ const UserPage = ({ userId }) => {
                 <div className="m-1">
                     <h1>{user.name}</h1>
                     <h3>Профессия : {user.profession.name}</h3>
-                    <QualitiesList qualities={user.qualities} />
+                    <Qualities qualities={user.qualities} />
                     <h5>Встретился раз : {user.completedMeetings} </h5>
                     <h3>Оценка : {user.rate} </h3>
                 </div>{" "}
