@@ -52,7 +52,7 @@ const UsersListPage = () => {
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex);
     };
-    const handelSearchQuery = ({ target }) => {
+    const handelSearchQuery = (target) => {
         setSelectedProf(undefined);
         setSearchQuery(target.value);
     };

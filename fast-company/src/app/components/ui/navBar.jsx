@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 const NavBar = () => {
     const navigate = [
-        { id: 1, label: "Main", link: "/" },
-        { id: 2, label: "Login", link: "/login" },
-        { id: 3, label: "Users", link: "/users" }
+        { id: 1, label: "Главная", link: "/" },
+        { id: 2, label: "Вход/Регистрация", link: "/login" },
+        { id: 3, label: "Пользователи", link: "/users" }
     ];
     return (
         <ul className="nav nav-tabs">

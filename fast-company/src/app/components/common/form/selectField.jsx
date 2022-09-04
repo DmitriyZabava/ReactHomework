@@ -7,40 +7,40 @@ const SelectFied = ({
     onChange,
     defaultOption,
     options,
-    error
+    error,
+    name
 }) => {
+    const handleChange = ({ target }) => {
+        onChange({ name: target.name, value: target.value });
+    };
     const getInputClasses = () => {
         return "form-select" + (error ? " is-invalid" : "");
     };
 
     const optionArray =
         !Array.isArray(options) && typeof options === "object"
-            ? Object.keys(options).map((optionName) => ({
-                  name: options[optionName].name,
-                  value: options[optionName]._id
-              }))
+            ? Object.values(options)
             : options;
-    console.log("optionArray", optionArray);
 
     return (
-        <div className="md-4">
-            <label htmlFor="validationCustom04" className="form-label">
+        <div className="mb-4">
+            <label htmlFor={name} className="form-label">
                 {label}
             </label>
             <select
                 className={getInputClasses()}
-                id="validationCustom04"
-                name="profession"
+                id={name}
+                name={name}
                 value={value}
-                onChange={onChange}
+                onChange={handleChange}
             >
                 <option disabled value="">
                     {defaultOption}
                 </option>
-                {optionArray &&
+                {optionArray.length > 0 &&
                     optionArray.map((option) => (
                         <option key={option.value} value={option.value}>
-                            {option.name}
+                            {option.label}
                         </option>
                     ))}
             </select>
@@ -55,7 +55,8 @@ SelectFied.propTypes = {
     value: PropTypes.string,
     onChange: PropTypes.func,
     error: PropTypes.string,
-    options: PropTypes.any
+    name: PropTypes.string,
+    options: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 export default SelectFied;
