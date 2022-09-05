@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { useHistory } from "react-router-dom";
+
+import { useHistory, useParams } from "react-router-dom";
 import { validator } from "../../../utils/validator";
 import TextField from "../../common/form/textField";
 import SelectFied from "../../common/form/selectField";
@@ -10,23 +10,18 @@ import api from "../../../api";
 import CheckBoxField from "../../common/form/checkBoxField";
 import Loader from "../../common/loader";
 
-const EditPage = ({ user, userId }) => {
-    const userQualities = Object.keys(user.qualities).map((optionName) => ({
-        label: user.qualities[optionName].name,
-        value: user.qualities[optionName]._id,
-        color: user.qualities[optionName].color
-    }));
-
+const EditPage = () => {
+    const { userId } = useParams();
     const [data, setData] = useState({
-        name: user.name,
-        email: user.email,
-        profession: user.profession._id,
-        sex: user.sex,
-        qualities: userQualities,
+        name: "",
+        email: "",
+        profession: "",
+        sex: "male",
+        qualities: [],
         confirm: false
     });
     const history = useHistory();
-
+    const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [qualities, setQualities] = useState([]);
     const [professions, setProfession] = useState([]);
@@ -38,6 +33,7 @@ const EditPage = ({ user, userId }) => {
             }
         }
     };
+
     const getQualities = (elements) => {
         const qualitiesArray = [];
         for (const elem of elements) {
@@ -53,13 +49,19 @@ const EditPage = ({ user, userId }) => {
         }
         return qualitiesArray;
     };
-    console.log(
-        "professions",
-        professions.length,
-        "qualities",
-        qualities.length
-    );
+    const transformData = (data) => {
+        return data.map((qual) => ({ label: qual.name, value: qual._id }));
+    };
     useEffect(() => {
+        setIsLoading(true);
+        api.users.getById(userId).then(({ profession, qualities, ...data }) =>
+            setData((prevState) => ({
+                ...prevState,
+                ...data,
+                qualities: transformData(qualities),
+                profession: profession._id
+            }))
+        );
         api.professions.fetchAll().then((data) => {
             const professionsList = Object.keys(data).map((professionName) => ({
                 label: data[professionName].name,
@@ -76,6 +78,9 @@ const EditPage = ({ user, userId }) => {
             setQualities(qualitiesList);
         });
     }, []);
+    useEffect(() => {
+        if (data._id) setIsLoading(false);
+    }, [data]);
 
     const handleChange = (target) => {
         setData((prevState) => ({
@@ -116,9 +121,10 @@ const EditPage = ({ user, userId }) => {
     };
 
     const isValid = Object.keys(errors).length === 0;
-
+    console.log("data", data);
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log("data", data);
         const isValid = validate();
         if (!isValid) return;
         const { profession, qualities } = data;
@@ -127,17 +133,16 @@ const EditPage = ({ user, userId }) => {
             profession: getProfessionById(profession),
             qualities: getQualities(qualities)
         };
-        console.log("updateUser", updateUser);
-        api.users.update(user._id, updateUser);
-        history.replace(`/users/${userId}`);
+        api.users
+            .update(userId, updateUser)
+            .then((data) => history.replace(`/users/${data._id}`));
     };
+
     return (
         <div className="container mt-5">
             <div className="row ">
                 <div className="col-md-6 offset-md-3 shadow p-4">
-                    {professions.length === 0 || qualities.length === 0 ? (
-                        <Loader />
-                    ) : (
+                    {!isLoading && Object.keys(professions).length > 0 ? (
                         <>
                             <h3 className="mb-4">Редактировать</h3>
                             <form onSubmit={handleSubmit}>
@@ -202,16 +207,13 @@ const EditPage = ({ user, userId }) => {
                                 </button>
                             </form>
                         </>
+                    ) : (
+                        <Loader />
                     )}
                 </div>
             </div>
         </div>
     );
-};
-
-EditPage.propTypes = {
-    user: PropTypes.object,
-    userId: PropTypes.string
 };
 
 export default EditPage;
