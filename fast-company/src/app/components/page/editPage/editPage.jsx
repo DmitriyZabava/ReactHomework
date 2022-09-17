@@ -121,10 +121,10 @@ const EditPage = () => {
     };
 
     const isValid = Object.keys(errors).length === 0;
-    console.log("data", data);
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("data", data);
+
         const isValid = validate();
         if (!isValid) return;
         const { profession, qualities } = data;
@@ -137,82 +137,89 @@ const EditPage = () => {
             .update(userId, updateUser)
             .then((data) => history.replace(`/users/${data._id}`));
     };
+    const handleReturn = () => history.push(`/users/${userId}`);
 
     return (
-        <div className="container mt-5">
-            <div className="row ">
-                <div className="col-md-6 offset-md-3 shadow p-4">
-                    {!isLoading && Object.keys(professions).length > 0 ? (
-                        <>
-                            <h3 className="mb-4">Редактировать</h3>
-                            <form onSubmit={handleSubmit}>
-                                <TextField
-                                    label="Пользователь"
-                                    id="name"
-                                    name="name"
-                                    value={data.name}
-                                    onChange={handleChange}
-                                    error={errors.name}
-                                />
-                                <TextField
-                                    label="Электронная Почта"
-                                    id="email"
-                                    name="email"
-                                    value={data.email}
-                                    onChange={handleChange}
-                                    error={errors.email}
-                                />
-                                <SelectFied
-                                    label="Выберите вашу профессию"
-                                    value={data.profession}
-                                    onChange={handleChange}
-                                    defaultOption="Choose..."
-                                    options={professions}
-                                    name="profession"
-                                    error={errors.profession}
-                                />
-                                <RadioField
-                                    options={[
-                                        { name: "Male", value: "male" },
-                                        { name: "Female", value: "female" },
-                                        { name: "Other", value: "other" }
-                                    ]}
-                                    value={data.sex}
-                                    name="sex"
-                                    onChange={handleChange}
-                                    label="Выберите пол"
-                                />
-                                <MultiSelectField
-                                    label="Выберите качества"
-                                    onChange={handleChange}
-                                    defaultValue={data.qualities}
-                                    options={qualities}
-                                    name="qualities"
-                                />
-                                <CheckBoxField
-                                    value={data.confirm}
-                                    onChange={handleChange}
-                                    name="confirm"
-                                    error={errors.confirm}
-                                >
-                                    Подтвердить
-                                </CheckBoxField>
+        <>
+            <div className="container mt-5">
+                <button className="btn btn-primary" onClick={handleReturn}>
+                    <i className="bi bi-caret-left" />
+                    Назад
+                </button>
+                <div className="row ">
+                    <div className="col-md-6 offset-md-3 shadow p-4">
+                        {!isLoading && Object.keys(professions).length > 0 ? (
+                            <>
+                                <h3 className="mb-4">Редактировать</h3>
+                                <form onSubmit={handleSubmit}>
+                                    <TextField
+                                        label="Пользователь"
+                                        id="name"
+                                        name="name"
+                                        value={data.name}
+                                        onChange={handleChange}
+                                        error={errors.name}
+                                    />
+                                    <TextField
+                                        label="Электронная Почта"
+                                        id="email"
+                                        name="email"
+                                        value={data.email}
+                                        onChange={handleChange}
+                                        error={errors.email}
+                                    />
+                                    <SelectFied
+                                        label="Выберите вашу профессию"
+                                        value={data.profession}
+                                        onChange={handleChange}
+                                        defaultOption="Choose..."
+                                        options={professions}
+                                        name="profession"
+                                        error={errors.profession}
+                                    />
+                                    <RadioField
+                                        options={[
+                                            { name: "Male", value: "male" },
+                                            { name: "Female", value: "female" },
+                                            { name: "Other", value: "other" }
+                                        ]}
+                                        value={data.sex}
+                                        name="sex"
+                                        onChange={handleChange}
+                                        label="Выберите пол"
+                                    />
+                                    <MultiSelectField
+                                        label="Выберите качества"
+                                        onChange={handleChange}
+                                        defaultValue={data.qualities}
+                                        options={qualities}
+                                        name="qualities"
+                                    />
+                                    <CheckBoxField
+                                        value={data.confirm}
+                                        onChange={handleChange}
+                                        name="confirm"
+                                        error={errors.confirm}
+                                    >
+                                        Подтвердить
+                                    </CheckBoxField>
 
-                                <button
-                                    type="submit"
-                                    disabled={!isValid}
-                                    className="btn btn-primary w-100 mx-auto"
-                                >
-                                    Обновить
-                                </button>
-                            </form>
-                        </>
-                    ) : (
-                        <Loader />
-                    )}
+                                    <button
+                                        type="submit"
+                                        disabled={!isValid}
+                                        className="btn btn-primary w-100 mx-auto"
+                                    >
+                                        Обновить
+                                    </button>
+                                </form>
+                            </>
+                        ) : (
+                            <Loader />
+                        )}
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 
