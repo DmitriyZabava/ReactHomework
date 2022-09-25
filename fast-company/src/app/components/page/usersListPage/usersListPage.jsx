@@ -10,6 +10,7 @@ import SearchStatus from "../../ui/searchStatus";
 import UsersTable from "../../ui/usersTable";
 import Loader from "../../common/loader";
 import TextField from "../../common/form/textField";
+import { useUser } from "../../../hooks/useUser";
 
 const UsersListPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -19,21 +20,19 @@ const UsersListPage = () => {
     const pageSize = 4;
     const [searchQuery, setSearchQuery] = useState("");
 
-    const [users, setUsers] = useState();
-
-    useEffect(() => {
-        api.users.fetchAll().then((data) => setUsers(data));
-    }, []);
+    const { users } = useUser();
+    // console.log("users", users);
 
     const handleDelete = (userId) => {
-        setUsers(users.filter((user) => user._id !== userId));
+        // setUsers(users.filter((user) => user._id !== userId));
+        console.log(userId);
     };
 
     const handleTogleBookMark = (userId) => {
         const userIndex = users.findIndex((user) => user._id === userId);
         const newUsers = [...users];
         newUsers[userIndex].bookmark = !newUsers[userIndex].bookmark;
-        setUsers(newUsers);
+        // setUsers(newUsers);
     };
 
     useEffect(() => {

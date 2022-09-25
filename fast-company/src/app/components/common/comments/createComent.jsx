@@ -59,7 +59,6 @@ function Createcontent({ onSubmit }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("data", data);
         const isValid = validate();
         if (!isValid) return;
         onSubmit(data);
@@ -87,13 +86,15 @@ function Createcontent({ onSubmit }) {
                     onChange={handleChange}
                     error={errors.content}
                 />
-                <button
-                    type="submit"
-                    disabled={!isValid}
-                    className="btn btn-primary  "
-                >
-                    Отправить
-                </button>
+                <div className="d-flex justify-content-end">
+                    <button
+                        type="submit"
+                        disabled={!isValid}
+                        className="btn btn-primary  "
+                    >
+                        Опубликовать
+                    </button>
+                </div>
             </form>
         </>
     );

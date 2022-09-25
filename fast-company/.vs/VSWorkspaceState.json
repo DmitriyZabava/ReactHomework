@@ -3,9 +3,13 @@
     "",
     "\\src",
     "\\src\\app",
+    "\\src\\app\\api",
+    "\\src\\app\\api\\fake.api",
     "\\src\\app\\components",
+    "\\src\\app\\components\\common",
+    "\\src\\app\\components\\common\\table",
     "\\src\\app\\components\\ui"
   ],
-  "SelectedNode": "\\src\\app\\App.js",
+  "SelectedNode": "\\src\\app\\api\\fake.api\\user.api.js",
   "PreviewInSolutionExplorer": false
 }

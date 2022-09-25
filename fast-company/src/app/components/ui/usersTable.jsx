@@ -5,6 +5,7 @@ import BookMark from "../common/bookmark";
 import Qualities from "./qualities";
 import Table from "../common/table";
 import { Link } from "react-router-dom";
+import Profession from "./profession";
 
 const UsersTable = ({
     users,
@@ -29,9 +30,12 @@ const UsersTable = ({
         },
         qualities: {
             name: "Качества",
-            component: (user) => <Qualities qualities={user.qualities} />
+            component: (user) => <Qualities qualityId={user.qualities} />
         },
-        profession: { path: "profession.name", name: "Профессия" },
+        profession: {
+            name: "Профессия",
+            component: (user) => <Profession id={user.profession} />
+        },
         completedMeetings: {
             path: "completedMeetings",
             name: "Встретился, раз"
@@ -65,10 +69,7 @@ const UsersTable = ({
             selectedSort={selectedSort}
             columns={columns}
             data={users}
-        >
-            {/* <TableHeader {...{ onSort, selectedSort, columns }} />
-            <TableBody {...{ data: users, columns }} /> */}
-        </Table>
+        ></Table>
     );
 };
 

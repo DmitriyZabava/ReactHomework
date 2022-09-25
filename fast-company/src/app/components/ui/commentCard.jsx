@@ -17,7 +17,6 @@ const CommentCard = () => {
     }, []);
 
     const handleSubmit = (data) => {
-        console.log("data", data);
         API.comments
             .add({ ...data, pageId: userId })
             .then((data) => setComments([...comments, data]));
@@ -29,7 +28,7 @@ const CommentCard = () => {
         });
     };
 
-    const sortedComments = orderBy(comments, ["desc"]);
+    const sortedComments = orderBy(comments, ["created_at"], ["desc"]);
 
     return (
         <>

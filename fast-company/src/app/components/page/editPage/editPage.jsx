@@ -9,6 +9,7 @@ import MultiSelectField from "../../common/form/multiSelectField";
 import api from "../../../api";
 import CheckBoxField from "../../common/form/checkBoxField";
 import Loader from "../../common/loader";
+import BackHistoryButton from "../../common/backHistoryButton";
 
 const EditPage = () => {
     const { userId } = useParams();
@@ -137,15 +138,11 @@ const EditPage = () => {
             .update(userId, updateUser)
             .then((data) => history.replace(`/users/${data._id}`));
     };
-    const handleReturn = () => history.push(`/users/${userId}`);
 
     return (
         <>
             <div className="container mt-5">
-                <button className="btn btn-primary" onClick={handleReturn}>
-                    <i className="bi bi-caret-left" />
-                    Назад
-                </button>
+                <BackHistoryButton />
                 <div className="row ">
                     <div className="col-md-6 offset-md-3 shadow p-4">
                         {!isLoading && Object.keys(professions).length > 0 ? (
