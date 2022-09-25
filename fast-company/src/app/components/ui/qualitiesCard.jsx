@@ -2,7 +2,7 @@ import React from "react";
 import Qualities from "./qualities";
 import PropTypes from "prop-types";
 
-const QualitiesCard = ({ qualityId }) => {
+const QualitiesCard = ({ qualityIds }) => {
     return (
         <div className="mb-3">
             <div className="card-body d-flex flex-column justify-content-center text-center">
@@ -10,7 +10,7 @@ const QualitiesCard = ({ qualityId }) => {
                     <span>Qualities</span>
                 </h5>
                 <p className="card-text">
-                    <Qualities qualityId={qualityId} />
+                    <Qualities qualityIds={qualityIds} />
                 </p>
             </div>
         </div>
@@ -18,7 +18,7 @@ const QualitiesCard = ({ qualityId }) => {
 };
 
 QualitiesCard.propTypes = {
-    qualityId: PropTypes.array
+    qualityIds: PropTypes.array
 };
 
 export default QualitiesCard;
