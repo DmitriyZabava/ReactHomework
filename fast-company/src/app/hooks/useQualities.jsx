@@ -12,12 +12,14 @@ export const useQualities = () => {
 export const QualitiesProvider = ({ children }) => {
     const [qualities, setQualities] = useState([]);
     const [error, setErrors] = useState(null);
+    const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
         const getQualities = async () => {
             try {
                 const { content } = await qualityService.fethAll();
                 setQualities(content);
+                setLoading(false);
             } catch (error) {
                 errorCatcher(error);
             }
@@ -42,7 +44,8 @@ export const QualitiesProvider = ({ children }) => {
         <QualitiesContext.Provider
             value={{
                 qualities,
-                getQuality
+                getQuality,
+                isLoading
             }}
         >
             {children}
