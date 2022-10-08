@@ -10,9 +10,9 @@ const Profession = ({ id }) => {
         return <p>{profesion.name}</p>;
     } else {
         return (
-            <p>
+            <h6>
                 <Loader />
-            </p>
+            </h6>
         );
     }
 };
