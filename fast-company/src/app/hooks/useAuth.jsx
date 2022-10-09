@@ -76,6 +76,13 @@ const AuthProvider = ({ children }) => {
                     };
                     throw errorObject;
                 }
+                if (message === "USER_DISABLED") {
+                    const errorObject = {
+                        password:
+                            "Ваш аккаунт временно заблокирован администрацией"
+                    };
+                    throw errorObject;
+                }
             }
         }
     }

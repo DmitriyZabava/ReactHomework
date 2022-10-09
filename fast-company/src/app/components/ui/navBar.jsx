@@ -42,7 +42,7 @@ const NavBar = () => {
                             </Link>
                         </li>
                     )}
-                </ul>{" "}
+                </ul>
             </div>
         </nav>
     );
