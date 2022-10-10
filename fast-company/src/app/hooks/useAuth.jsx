@@ -5,7 +5,12 @@ import userService from "../services/user.service";
 import { toast } from "react-toastify";
 import { setTokens } from "../services/localStorage.service";
 
-const httpAuth = axios.create();
+const httpAuth = axios.create({
+    baseURL: "https://identitytoolkit.googleapis.com/v1/",
+    params: {
+        key: process.env.REACT_APP_FIREBASE_KEY
+    }
+});
 
 const AuthContext = React.createContext();
 
@@ -19,10 +24,8 @@ const AuthProvider = ({ children }) => {
     const [error, setErrors] = useState(null);
 
     async function siginUp({ email, password, ...rest }) {
-        const _URL = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`;
-
         try {
-            const { data } = await httpAuth.post(_URL, {
+            const { data } = await httpAuth.post(`accounts:signUp?`, {
                 email,
                 password,
                 returnSecureToken: true
@@ -46,14 +49,15 @@ const AuthProvider = ({ children }) => {
     }
 
     async function siginIn({ email, password }) {
-        const _URL = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_FIREBASE_KEY}`;
-
         try {
-            const { data } = await httpAuth.post(_URL, {
-                email,
-                password,
-                returnSecureToken: true
-            });
+            const { data } = await httpAuth.post(
+                `accounts:signInWithPassword?`,
+                {
+                    email,
+                    password,
+                    returnSecureToken: true
+                }
+            );
             if (data.registered) {
                 setTokens(data);
                 setAuth(data.registered);
@@ -64,24 +68,19 @@ const AuthProvider = ({ children }) => {
             const { code, message } = error.response.data.error;
 
             if (code === 400) {
-                if (message === "EMAIL_NOT_FOUND") {
-                    const errorObject = {
-                        email: "Пользователь с таким Email не найден"
-                    };
-                    throw errorObject;
-                }
-                if (message === "INVALID_PASSWORD") {
-                    const errorObject = {
-                        password: "Не верный логин или пароль"
-                    };
-                    throw errorObject;
-                }
-                if (message === "USER_DISABLED") {
-                    const errorObject = {
-                        password:
+                switch (message) {
+                    case "EMAIL_NOT_FOUND":
+                        throw new Error("Не верный логин или пароль");
+                    case "INVALID_PASSWORD":
+                        throw new Error("Не верный логин или пароль");
+                    case "USER_DISABLED":
+                        throw new Error(
                             "Ваш аккаунт временно заблокирован администрацией"
-                    };
-                    throw errorObject;
+                        );
+                    default:
+                        throw new Error(
+                            "Слишком много попыток входа ! Попробуйте позднее ."
+                        );
                 }
             }
         }

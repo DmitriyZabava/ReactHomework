@@ -13,6 +13,7 @@ const LoginForm = () => {
         stayOn: false
     });
     const [errors, setErrors] = useState({});
+    const [enterError, setEnterError] = useState(null);
 
     const { siginIn } = useAuth();
 
@@ -21,30 +22,18 @@ const LoginForm = () => {
             ...prevState,
             [target.name]: target.value
         }));
+        setEnterError(null);
     };
 
     const validatorConfig = {
         email: {
             isRequired: {
                 message: "Электронная почта обязательна для заполнения"
-            },
-            isEmail: {
-                message: "Email введён некоректно"
             }
         },
         password: {
             isRequired: {
                 message: "Пароль обязателен для заполнения"
-            },
-            isCapitalSymbol: {
-                message: "Пародь должен содержать заглавную букву"
-            },
-            isContainDigit: {
-                message: "Пародь должен содержать цифру"
-            },
-            min: {
-                message: "Пароль должен содержать минимум 8 символов",
-                value: 8
             }
         }
     };
@@ -69,7 +58,7 @@ const LoginForm = () => {
             await siginIn(data);
             history.push("/");
         } catch (error) {
-            setErrors(error);
+            setEnterError(error.message);
         }
     };
 
@@ -100,9 +89,10 @@ const LoginForm = () => {
                 >
                     <a>Оставаться в системе</a>
                 </CheckBoxField>
+                {enterError && <p className="text-danger">{enterError}</p>}
                 <button
                     type="submit"
-                    disabled={!isValide}
+                    disabled={!isValide || enterError}
                     className="btn btn-primary w-100 mx-auto"
                 >
                     Отправить
