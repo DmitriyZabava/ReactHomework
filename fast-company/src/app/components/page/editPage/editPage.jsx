@@ -1,86 +1,53 @@
 import React, { useState, useEffect } from "react";
 
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { validator } from "../../../utils/validator";
 import TextField from "../../common/form/textField";
 import SelectFied from "../../common/form/selectField";
 import RadioField from "../../common/form/radioField";
 import MultiSelectField from "../../common/form/multiSelectField";
-import api from "../../../api";
 import CheckBoxField from "../../common/form/checkBoxField";
 import Loader from "../../common/loader";
 import BackHistoryButton from "../../common/backHistoryButton";
+import { useQualities } from "../../../hooks/useQualities";
+import { useProfession } from "../../../hooks/useProfession";
+import { useAuth } from "../../../hooks/useAuth";
 
 const EditPage = () => {
-    const { userId } = useParams();
+    const history = useHistory();
+    const [errors, setErrors] = useState({});
+    const [isLoading, setLoading] = useState(true);
+    const { currentUser, updateUser } = useAuth();
+    const {
+        getQualitiesByIds,
+        qualities,
+        isLoading: qualityLoading
+    } = useQualities();
+    const qualitiesList = convertValue(qualities);
+    const { professions, isLoading: professionLoading } = useProfession();
+    const professionList = convertValue(professions);
+    const userQualities = getQualitiesByIds(currentUser.qualities);
+
     const [data, setData] = useState({
-        name: "",
-        email: "",
-        profession: "",
-        sex: "male",
-        qualities: [],
+        ...currentUser,
+        qualities: convertValue(userQualities),
         confirm: false
     });
-    const history = useHistory();
-    const [isLoading, setIsLoading] = useState(false);
-    const [errors, setErrors] = useState({});
-    const [qualities, setQualities] = useState([]);
-    const [professions, setProfession] = useState([]);
 
-    const getProfessionById = (id) => {
-        for (const prof of professions) {
-            if (prof.value === id) {
-                return { _id: prof.value, name: prof.label };
-            }
+    function convertValue(value) {
+        if (value) {
+            const array = Array.isArray(value) ? value : Object.values(value);
+            return array.map((item) => {
+                const { name: label, _id: value, ...rest } = item;
+                return { label, value, ...rest };
+            });
+        } else {
+            setLoading(true);
         }
-    };
+    }
 
-    const getQualities = (elements) => {
-        const qualitiesArray = [];
-        for (const elem of elements) {
-            for (const quality in qualities) {
-                if (elem.value === qualities[quality].value) {
-                    qualitiesArray.push({
-                        _id: qualities[quality].value,
-                        name: qualities[quality].label,
-                        color: qualities[quality].color
-                    });
-                }
-            }
-        }
-        return qualitiesArray;
-    };
-    const transformData = (data) => {
-        return data.map((qual) => ({ label: qual.name, value: qual._id }));
-    };
     useEffect(() => {
-        setIsLoading(true);
-        api.users.getById(userId).then(({ profession, qualities, ...data }) =>
-            setData((prevState) => ({
-                ...prevState,
-                ...data,
-                qualities: transformData(qualities),
-                profession: profession._id
-            }))
-        );
-        api.professions.fetchAll().then((data) => {
-            const professionsList = Object.keys(data).map((professionName) => ({
-                label: data[professionName].name,
-                value: data[professionName]._id
-            }));
-            setProfession(professionsList);
-        });
-        api.qualities.fetchAll().then((data) => {
-            const qualitiesList = Object.keys(data).map((optionName) => ({
-                label: data[optionName].name,
-                value: data[optionName]._id,
-                color: data[optionName].color
-            }));
-            setQualities(qualitiesList);
-        });
-    }, []);
-    useEffect(() => {
-        if (data._id) setIsLoading(false);
+        if (data._id) setLoading(false);
     }, [data]);
 
     const handleChange = (target) => {
@@ -123,20 +90,22 @@ const EditPage = () => {
 
     const isValid = Object.keys(errors).length === 0;
 
-    const handleSubmit = (e) => {
+    function convertQulities(qual) {
+        return qual.map((q) => q.value);
+    }
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const isValid = validate();
         if (!isValid) return;
-        const { profession, qualities } = data;
-        const updateUser = {
-            ...data,
-            profession: getProfessionById(profession),
-            qualities: getQualities(qualities)
-        };
-        api.users
-            .update(userId, updateUser)
-            .then((data) => history.replace(`/users/${data._id}`));
+        const newData = { ...data, qualities: convertQulities(data.qualities) };
+        try {
+            await updateUser({ ...newData, confirm: false });
+            history.replace(`/users/${newData._id}`);
+        } catch (error) {
+            setErrors(error);
+        }
     };
 
     return (
@@ -145,7 +114,10 @@ const EditPage = () => {
                 <BackHistoryButton />
                 <div className="row ">
                     <div className="col-md-6 offset-md-3 shadow p-4">
-                        {!isLoading && Object.keys(professions).length > 0 ? (
+                        {!isLoading &&
+                        Object.keys(professions).length > 0 &&
+                        !professionLoading &&
+                        !qualityLoading ? (
                             <>
                                 <h3 className="mb-4">Редактировать</h3>
                                 <form onSubmit={handleSubmit}>
@@ -170,7 +142,7 @@ const EditPage = () => {
                                         value={data.profession}
                                         onChange={handleChange}
                                         defaultOption="Choose..."
-                                        options={professions}
+                                        options={professionList}
                                         name="profession"
                                         error={errors.profession}
                                     />
@@ -189,7 +161,7 @@ const EditPage = () => {
                                         label="Выберите качества"
                                         onChange={handleChange}
                                         defaultValue={data.qualities}
-                                        options={qualities}
+                                        options={qualitiesList}
                                         name="qualities"
                                     />
                                     <CheckBoxField

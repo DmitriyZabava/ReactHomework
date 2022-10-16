@@ -1,14 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import NavProfile from "./navProfile";
 
 const NavBar = () => {
-    const { isAuth, setAuth } = useAuth();
-
-    const handleAuthExit = () => setAuth(false);
+    const { currentUser } = useAuth();
 
     return (
-        <nav className="navbar navbar-expand-lg ">
+        <nav className="navbar navbar-expand-lg bg-light ">
             <div className="container-fluid nav-tabs">
                 <ul className="nav ">
                     <li className="nav-item">
@@ -17,23 +16,17 @@ const NavBar = () => {
                             Главная
                         </Link>
                     </li>
-                    <li className="nav-item">
-                        <Link
-                            className="nav-link"
-                            to={isAuth ? "/users" : "/login"}
-                        >
-                            Пользователи
-                        </Link>
-                    </li>
-                </ul>
-                <ul className="nav ">
-                    {isAuth ? (
-                        <li className="nav-item" onClick={handleAuthExit}>
-                            <Link className="nav-link" to="/login">
-                                <i className="px-1 bi bi-box-arrow-left" />
-                                Выйти
+                    {currentUser && (
+                        <li className="nav-item">
+                            <Link className="nav-link" to={"/users"}>
+                                Пользователи
                             </Link>
                         </li>
+                    )}
+                </ul>
+                <ul className="nav ">
+                    {currentUser ? (
+                        <NavProfile />
                     ) : (
                         <li className="nav-item">
                             <Link className="nav-link" to="/login">

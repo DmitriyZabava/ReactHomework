@@ -29,6 +29,10 @@ export const QualitiesProvider = ({ children }) => {
 
     const getQuality = (id) => qualities.find((qual) => qual._id === id);
 
+    const getQualitiesByIds = (ids) => {
+        return ids.map((id) => getQuality(id));
+    };
+
     function errorCatcher(error) {
         const { message } = error.response.data;
         setErrors(message);
@@ -45,6 +49,7 @@ export const QualitiesProvider = ({ children }) => {
             value={{
                 qualities,
                 getQuality,
+                getQualitiesByIds,
                 isLoading
             }}
         >

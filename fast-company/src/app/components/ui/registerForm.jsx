@@ -15,6 +15,7 @@ const RegisterForm = () => {
     const history = useHistory();
     const [data, setData] = useState({
         email: "",
+        name: "",
         password: "",
         profession: "",
         sex: "male",
@@ -22,7 +23,7 @@ const RegisterForm = () => {
         licence: false
     });
 
-    const { siginUp } = useAuth();
+    const { signUp } = useAuth();
 
     const [errors, setErrors] = useState({});
 
@@ -48,6 +49,15 @@ const RegisterForm = () => {
             },
             isEmail: {
                 message: "Email введён некоректно"
+            }
+        },
+        name: {
+            isRequired: {
+                message: "Имя обязательно для заполнения"
+            },
+            min: {
+                message: "Имя должно содержать минимум 3 символа",
+                value: 3
             }
         },
         password: {
@@ -102,7 +112,7 @@ const RegisterForm = () => {
         const newData = { ...data, qualities: convertQulities(data.qualities) };
 
         try {
-            await siginUp(newData);
+            await signUp(newData);
             history.push("/");
         } catch (error) {
             setErrors(error);
@@ -112,6 +122,14 @@ const RegisterForm = () => {
     return (
         <>
             <form onSubmit={handleSubmit}>
+                <TextField
+                    label="Имя"
+                    id="name"
+                    name="name"
+                    value={data.name}
+                    onChange={handleChange}
+                    error={errors.name}
+                />
                 <TextField
                     label="Электронная Почта"
                     id="email"
