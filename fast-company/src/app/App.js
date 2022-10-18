@@ -26,7 +26,7 @@ function App() {
                             <Route path="/logout" exact component={LogOut} />
                             <Route path="/login/:type?" component={Login} />
                             <Route path="/" exact component={Home} />
-                            <Redirect to="/" />{" "}
+                            <Redirect to="/" />
                         </Switch>
                     </QualitiesProvider>
                 </ProfessionProvider>

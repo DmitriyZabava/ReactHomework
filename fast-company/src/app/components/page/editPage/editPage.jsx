@@ -17,7 +17,7 @@ const EditPage = () => {
     const history = useHistory();
     const [errors, setErrors] = useState({});
     const [isLoading, setLoading] = useState(true);
-    const { currentUser, updateUser } = useAuth();
+    const { currentUser, updateUserData } = useAuth();
     const {
         getQualitiesByIds,
         qualities,
@@ -28,11 +28,7 @@ const EditPage = () => {
     const professionList = convertValue(professions);
     const userQualities = getQualitiesByIds(currentUser.qualities);
 
-    const [data, setData] = useState({
-        ...currentUser,
-        qualities: convertValue(userQualities),
-        confirm: false
-    });
+    const [data, setData] = useState();
 
     function convertValue(value) {
         if (value) {
@@ -41,13 +37,26 @@ const EditPage = () => {
                 const { name: label, _id: value, ...rest } = item;
                 return { label, value, ...rest };
             });
-        } else {
-            setLoading(true);
         }
     }
+    useEffect(() => {
+        if (
+            !qualityLoading &&
+            !professionLoading &&
+            currentUser &&
+            !data &&
+            userQualities
+        ) {
+            setData({
+                ...currentUser,
+                qualities: convertValue(userQualities),
+                confirm: false
+            });
+        }
+    }, [qualityLoading, professionLoading, currentUser, data]);
 
     useEffect(() => {
-        if (data._id) setLoading(false);
+        if (data && isLoading) setLoading(false);
     }, [data]);
 
     const handleChange = (target) => {
@@ -101,7 +110,7 @@ const EditPage = () => {
         if (!isValid) return;
         const newData = { ...data, qualities: convertQulities(data.qualities) };
         try {
-            await updateUser({ ...newData, confirm: false });
+            await updateUserData({ ...newData, confirm: false });
             history.replace(`/users/${newData._id}`);
         } catch (error) {
             setErrors(error);
@@ -114,10 +123,7 @@ const EditPage = () => {
                 <BackHistoryButton />
                 <div className="row ">
                     <div className="col-md-6 offset-md-3 shadow p-4">
-                        {!isLoading &&
-                        Object.keys(professions).length > 0 &&
-                        !professionLoading &&
-                        !qualityLoading ? (
+                        {!isLoading && Object.keys(professions).length > 0 ? (
                             <>
                                 <h3 className="mb-4">Редактировать</h3>
                                 <form onSubmit={handleSubmit}>
