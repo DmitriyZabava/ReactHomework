@@ -10,12 +10,17 @@ import UsersTable from "../../ui/usersTable";
 import Loader from "../../common/loader";
 import TextField from "../../common/form/textField";
 import { useUser } from "../../../hooks/useUser";
-import { useProfession } from "../../../hooks/useProfession";
 import { useAuth } from "../../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import {
+    getProfessions,
+    getProfessionsLoadingStatus
+} from "../../../store/professions";
 
 const UsersListPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const { professions, isLoading: professionLoading } = useProfession();
+    const professions = useSelector(getProfessions());
+    const professionLoading = useSelector(getProfessionsLoadingStatus());
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
     const pageSize = 4;
@@ -23,15 +28,10 @@ const UsersListPage = () => {
     const { currentUser } = useAuth();
     const { users } = useUser();
 
-    const handleDelete = (userId) => {
-        console.log(userId);
-    };
-
     const handleTogleBookMark = (userId) => {
         const userIndex = users.findIndex((user) => user._id === userId);
         const newUsers = [...users];
         newUsers[userIndex].bookmark = !newUsers[userIndex].bookmark;
-        // setUsers(newUsers);
     };
 
     useEffect(() => {
@@ -67,7 +67,7 @@ const UsersListPage = () => {
                 ? data.filter(
                       (user) =>
                           JSON.stringify(user.profession) ===
-                          JSON.stringify(selectedProf)
+                          JSON.stringify(selectedProf._id)
                   )
                 : data;
             return filteredUsers.filter((user) => user._id !== currentUser._id);
@@ -120,7 +120,6 @@ const UsersListPage = () => {
                             users={usersCrop}
                             onSort={handleSort}
                             selectedSort={sortBy}
-                            onDelete={handleDelete}
                             onToggleBookMark={handleTogleBookMark}
                         />
                     )}

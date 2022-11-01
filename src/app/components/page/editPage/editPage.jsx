@@ -9,23 +9,32 @@ import MultiSelectField from "../../common/form/multiSelectField";
 import CheckBoxField from "../../common/form/checkBoxField";
 import Loader from "../../common/loader";
 import BackHistoryButton from "../../common/backHistoryButton";
-import { useQualities } from "../../../hooks/useQualities";
-import { useProfession } from "../../../hooks/useProfession";
+
 import { useAuth } from "../../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import {
+    getQualities,
+    getQualitiesLoadingStatus
+} from "../../../store/qualities";
+import {
+    getProfessions,
+    getProfessionsLoadingStatus
+} from "../../../store/professions";
 
 const EditPage = () => {
     const history = useHistory();
     const [errors, setErrors] = useState({});
     const [isLoading, setLoading] = useState(true);
     const { currentUser, updateUserData } = useAuth();
-    const {
-        getQualitiesByIds,
-        qualities,
-        isLoading: qualityLoading
-    } = useQualities();
+
+    const qualities = useSelector(getQualities());
+    const qualityLoading = useSelector(getQualitiesLoadingStatus());
     const qualitiesList = convertValue(qualities);
-    const { professions, isLoading: professionLoading } = useProfession();
+
+    const professions = useSelector(getProfessions());
+    const professionLoading = useSelector(getProfessionsLoadingStatus());
     const professionList = convertValue(professions);
+
     const userQualities = getQualitiesByIds(currentUser.qualities);
 
     const [data, setData] = useState();
@@ -37,6 +46,11 @@ const EditPage = () => {
                 const { name: label, _id: value, ...rest } = item;
                 return { label, value, ...rest };
             });
+        }
+    }
+    function getQualitiesByIds(ids) {
+        if (ids && qualities) {
+            return ids.map((id) => qualities.find((qual) => qual._id === id));
         }
     }
     useEffect(() => {
