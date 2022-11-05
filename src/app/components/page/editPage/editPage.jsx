@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import { useHistory } from "react-router-dom";
 import { validator } from "../../../utils/validator";
 import TextField from "../../common/form/textField";
 import SelectFied from "../../common/form/selectField";
@@ -9,9 +8,7 @@ import MultiSelectField from "../../common/form/multiSelectField";
 import CheckBoxField from "../../common/form/checkBoxField";
 import Loader from "../../common/loader";
 import BackHistoryButton from "../../common/backHistoryButton";
-
-import { useAuth } from "../../../hooks/useAuth";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
     getQualities,
     getQualitiesLoadingStatus
@@ -20,13 +17,13 @@ import {
     getProfessions,
     getProfessionsLoadingStatus
 } from "../../../store/professions";
+import { getCurrentUserData, updateUser } from "../../../store/users";
 
 const EditPage = () => {
-    const history = useHistory();
+    const dispatch = useDispatch();
     const [errors, setErrors] = useState({});
     const [isLoading, setLoading] = useState(true);
-    const { currentUser, updateUserData } = useAuth();
-
+    const currentUser = useSelector(getCurrentUserData());
     const qualities = useSelector(getQualities());
     const qualityLoading = useSelector(getQualitiesLoadingStatus());
     const qualitiesList = convertValue(qualities);
@@ -34,7 +31,6 @@ const EditPage = () => {
     const professions = useSelector(getProfessions());
     const professionLoading = useSelector(getProfessionsLoadingStatus());
     const professionList = convertValue(professions);
-
     const userQualities = getQualitiesByIds(currentUser.qualities);
 
     const [data, setData] = useState();
@@ -117,18 +113,13 @@ const EditPage = () => {
         return qual.map((q) => q.value);
     }
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-
         const isValid = validate();
         if (!isValid) return;
+
         const newData = { ...data, qualities: convertQulities(data.qualities) };
-        try {
-            await updateUserData({ ...newData, confirm: false });
-            history.replace(`/users/${newData._id}`);
-        } catch (error) {
-            setErrors(error);
-        }
+        dispatch(updateUser({ ...newData, confirm: false }));
     };
 
     return (

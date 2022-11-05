@@ -9,13 +9,13 @@ import SearchStatus from "../../ui/searchStatus";
 import UsersTable from "../../ui/usersTable";
 import Loader from "../../common/loader";
 import TextField from "../../common/form/textField";
-import { useUser } from "../../../hooks/useUser";
-import { useAuth } from "../../../hooks/useAuth";
+
 import { useSelector } from "react-redux";
 import {
     getProfessions,
     getProfessionsLoadingStatus
 } from "../../../store/professions";
+import { getCurrentUserId, getUsersList } from "../../../store/users";
 
 const UsersListPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -23,10 +23,10 @@ const UsersListPage = () => {
     const professionLoading = useSelector(getProfessionsLoadingStatus());
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
-    const pageSize = 4;
+    const pageSize = 3;
     const [searchQuery, setSearchQuery] = useState("");
-    const { currentUser } = useAuth();
-    const { users } = useUser();
+    const currentUserId = useSelector(getCurrentUserId());
+    const users = useSelector(getUsersList());
 
     const handleTogleBookMark = (userId) => {
         const userIndex = users.findIndex((user) => user._id === userId);
@@ -70,7 +70,7 @@ const UsersListPage = () => {
                           JSON.stringify(selectedProf._id)
                   )
                 : data;
-            return filteredUsers.filter((user) => user._id !== currentUser._id);
+            return filteredUsers.filter((user) => user._id !== currentUserId);
         }
         const filteredUsers = filterUser(users);
         const count = filteredUsers.length;

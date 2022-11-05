@@ -5,12 +5,13 @@ import UserCard from "../../ui/userCard";
 import MeetigsCard from "../../ui/meetingsCard";
 import CommentCard from "../../ui/commentCard";
 import QualitiesCard from "../../ui/qualitiesCard";
-import { useUser } from "../../../hooks/useUser";
+
 import CommentsProvider from "../../../hooks/useComments";
+import { getUserById } from "../../../store/users";
+import { useSelector } from "react-redux";
 
 const UserPage = ({ userId }) => {
-    const { getUser } = useUser();
-    const user = getUser(userId);
+    const user = useSelector(getUserById(userId));
 
     if (user) {
         return (

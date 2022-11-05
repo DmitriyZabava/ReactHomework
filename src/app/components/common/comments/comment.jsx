@@ -2,13 +2,12 @@ import React from "react";
 import PropTypes from "prop-types";
 import Loader from "../loader";
 import { formatDate } from "../../../utils/formatDate";
-import { useUser } from "../../../hooks/useUser";
-import { useAuth } from "../../../hooks/useAuth";
+import { getCurrentUserId, getUserById } from "../../../store/users";
+import { useSelector } from "react-redux";
 
 const Comment = ({ content, userId, created_at: created, onRemove, _id }) => {
-    const { getUser } = useUser();
-    const { currentUser } = useAuth();
-    const user = getUser(userId);
+    const currentUserId = useSelector(getCurrentUserId());
+    const user = useSelector(getUserById(userId));
 
     if (user) {
         return (
@@ -32,7 +31,7 @@ const Comment = ({ content, userId, created_at: created, onRemove, _id }) => {
                                                 {formatDate(created)}
                                             </span>
                                         </p>
-                                        {currentUser._id === userId && (
+                                        {currentUserId === userId && (
                                             <button
                                                 onClick={() => onRemove(_id)}
                                                 className="btn btn-sm  text-primary d-flex  align-items-center"

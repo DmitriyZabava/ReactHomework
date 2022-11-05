@@ -39,8 +39,12 @@ export const loadProfessionsList = () => async (dispatch) => {
 };
 export const getProfessions = () => (state) => state.professions.entities;
 
-export const getProfession = (professionId) => (state) => {
-    return state.professions.entities.find((prof) => prof._id === professionId);
+export const getProfessionById = (professionId) => (state) => {
+    if (state.professions.entities) {
+        return state.professions.entities.find(
+            (prof) => prof._id === professionId
+        );
+    }
 };
 
 export const getProfessionsLoadingStatus = () => (state) =>
