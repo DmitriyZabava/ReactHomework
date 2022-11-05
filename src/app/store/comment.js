@@ -36,7 +36,6 @@ const commentsSlice = createSlice({
             state.isLoading = true;
         },
         commentRemoved: (state, action) => {
-            console.log("APaylod", action.payload);
             state.entities = state.entities.filter(
                 (comm) => comm._id !== action.payload
             );
@@ -77,23 +76,22 @@ export const getComments = () => (state) => state.comments.entities;
 export const getCommentsLoadingStatus = () => (state) =>
     state.comments.isLoading;
 
-export const createComment =
-    (payload, userId, currentUserId) => async (dispatch) => {
-        dispatch(commetCreateRequsted());
-        const comment = {
-            ...payload,
-            _id: nanoid(),
-            pageId: userId,
-            created_at: Date.now(),
-            userId: currentUserId
-        };
-        try {
-            const { content } = await commentService.createComment(comment);
-            dispatch(comentCreated(content));
-        } catch (error) {
-            dispatch(commentCreateFailed(error.massege));
-        }
+export const createComment = (payload, pageId, userId) => async (dispatch) => {
+    dispatch(commetCreateRequsted());
+    const comment = {
+        ...payload,
+        _id: nanoid(),
+        pageId,
+        created_at: Date.now(),
+        userId
     };
+    try {
+        const { content } = await commentService.createComment(comment);
+        dispatch(comentCreated(content));
+    } catch (error) {
+        dispatch(commentCreateFailed(error.massege));
+    }
+};
 export const removeComment = (commentId) => async (dispatch) => {
     dispatch(commentRemoveRequested());
     try {

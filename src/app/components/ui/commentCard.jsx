@@ -16,17 +16,17 @@ import { getCurrentUserId } from "../../store/users";
 
 const CommentCard = () => {
     const dispatch = useDispatch();
-    const { userId } = useParams();
-    const currentUserId = useSelector(getCurrentUserId());
+    const { userId: pageId } = useParams();
+    const userId = useSelector(getCurrentUserId());
     const isLoading = useSelector(getCommentsLoadingStatus());
     const comments = useSelector(getComments());
 
     useEffect(() => {
-        dispatch(loadCommentsList(userId));
-    }, [userId]);
+        dispatch(loadCommentsList(pageId));
+    }, [pageId]);
 
     const handleSubmit = (data) => {
-        dispatch(createComment(data, userId, currentUserId));
+        dispatch(createComment(data, pageId, userId));
     };
 
     const handleRemove = (id) => {
