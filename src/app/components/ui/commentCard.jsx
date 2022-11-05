@@ -1,18 +1,36 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { orderBy } from "lodash";
-import { useComments } from "../../hooks/useComments";
 import CommentsList from "../common/comments/commentsList";
 import CreateComent from "../common/comments/createComent";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    createComment,
+    getComments,
+    getCommentsLoadingStatus,
+    loadCommentsList,
+    removeComment
+} from "../../store/comment";
+import Loader from "../common/loader";
+import { useParams } from "react-router-dom";
+import { getCurrentUserId } from "../../store/users";
 
 const CommentCard = () => {
-    const { createComent, comments, removeComment } = useComments();
+    const dispatch = useDispatch();
+    const { userId } = useParams();
+    const currentUserId = useSelector(getCurrentUserId());
+    const isLoading = useSelector(getCommentsLoadingStatus());
+    const comments = useSelector(getComments());
+
+    useEffect(() => {
+        dispatch(loadCommentsList(userId));
+    }, [userId]);
 
     const handleSubmit = (data) => {
-        createComent(data);
+        dispatch(createComment(data, userId, currentUserId));
     };
 
     const handleRemove = (id) => {
-        removeComment(id);
+        dispatch(removeComment(id));
     };
 
     const sortedComments = orderBy(comments, ["created_at"], ["desc"]);
@@ -30,10 +48,14 @@ const CommentCard = () => {
                         <h2>Comments</h2>
                         <hr />
 
-                        <CommentsList
-                            comments={sortedComments}
-                            onRemove={handleRemove}
-                        />
+                        {!isLoading ? (
+                            <CommentsList
+                                comments={sortedComments}
+                                onRemove={handleRemove}
+                            />
+                        ) : (
+                            <Loader />
+                        )}
                     </div>
                 </div>
             )}

@@ -3,9 +3,8 @@ import TextField from "../common/form/textField";
 import { validator } from "../../utils/validator";
 import CheckBoxField from "../common/form/checkBoxField";
 import { useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { login } from "../../store/users";
-// import history from "../utils/history";
+import { useDispatch, useSelector } from "react-redux";
+import { getAuthError, login } from "../../store/users";
 
 const LoginForm = () => {
     const history = useHistory();
@@ -15,15 +14,14 @@ const LoginForm = () => {
         password: "",
         stayOn: false
     });
+    const logginError = useSelector(getAuthError());
     const [errors, setErrors] = useState({});
-    const [enterError, setEnterError] = useState(null);
 
     const handleChange = (target) => {
         setData((prevState) => ({
             ...prevState,
             [target.name]: target.value
         }));
-        setEnterError(null);
     };
 
     const validatorConfig = {
@@ -90,10 +88,10 @@ const LoginForm = () => {
                 >
                     <a>Оставаться в системе</a>
                 </CheckBoxField>
-                {enterError && <p className="text-danger">{enterError}</p>}
+                {logginError && <p className="text-danger">{logginError}</p>}
                 <button
                     type="submit"
-                    disabled={!isValide || enterError}
+                    disabled={!isValide}
                     className="btn btn-primary w-100 mx-auto"
                 >
                     Отправить
